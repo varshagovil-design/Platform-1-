@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Platform 1</title>
+<title>Platform 1 Match</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Shrikhand&family=Press+Start+2P&family=Noto+Sans+Devanagari:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -274,8 +274,19 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 /* hide gameplay UI behind the intro and picker */
 #app.cine #top,#app.cine #dock,#app.cine #mini,#app.cine #vctl,#app.cine #arrow,#app.cine #toast,#app.cine #joy,#app.cine #btnAct,#app.cine #coopTag{display:none!important}
 /* gameplay layout: clue box, arrow, map and view buttons stacked without overlap */
-#arrow{top:72px}
-#toast{top:118px}
+#arrow{top:72px;background:#fff8ea;color:#16283a;border-radius:18px;padding:4px 12px;font-size:16px;box-shadow:0 3px 0 rgba(22,40,58,.16)}
+#arrow svg{width:30px;height:30px;display:block}
+#toast{top:140px}
+.popfx{position:absolute;left:50%;top:30%;z-index:30;transform:translateX(-50%);background:#16283a;color:#fff;border:3px solid #f4b12e;border-radius:14px;padding:8px 14px;display:flex;gap:8px;align-items:center;font-size:17px;pointer-events:none;animation:pfx 1.4s ease-out forwards;white-space:nowrap}
+.popfx .ic{width:34px;height:34px}.popfx em{font-style:normal;color:#ff8a7a;font-weight:700}
+@keyframes pfx{0%{opacity:0;transform:translate(-50%,16px) scale(.7)}15%{opacity:1;transform:translate(-50%,0) scale(1.1)}30%{transform:translate(-50%,0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-30px)}}
+#cash.bump{display:inline-block;animation:cbump .5s}@keyframes cbump{30%{transform:scale(1.6);color:#e2492f}}
+.cf{position:absolute;top:-12px;width:9px;height:9px;z-index:29;pointer-events:none;animation:cfa 3s linear forwards}
+@keyframes cfa{to{transform:translateY(110vh) rotate(540deg)}}
+.mrs{display:flex;justify-content:center;gap:12px;margin:6px 0 4px}.ms{font-size:34px;line-height:1;color:#c9bfa8;border-bottom:4px solid #c9bfa8;padding:0 6px 4px}.ms.on{color:#16283a;border-color:#e2492f}
+.mkey{display:flex;gap:10px}.mkey .btn{min-height:64px;font-size:20px;margin-top:6px}
+.dance{display:flex;justify-content:center;gap:6px;margin:6px 0 12px}.dance img{width:48px;height:48px;image-rendering:pixelated;border:3px solid #fff8ea;animation:dn .5s steps(2) infinite}
+.dance img:nth-child(even){animation-delay:.25s}@keyframes dn{50%{transform:translateY(-9px) rotate(5deg)}}
 #mini{top:108px}
 #vctl{top:236px}
 #coopTag{top:392px}
@@ -299,6 +310,7 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 .ky{animation:kyl .6s steps(1) infinite}@keyframes kyl{50%{opacity:.3}}
 </style>
 
+
 <div id="app">
   <canvas id="gl" aria-label="Platform 1, a small railway station. Drag to walk, tap a marker to examine."></canvas>
   <header id="top">
@@ -307,7 +319,7 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
   </header>
   <div id="toast" role="status" aria-live="polite"></div>
   <canvas id="mini" width="100" height="95" aria-label="Map of the places you have found. Tap to open the big map."></canvas>
-  <div id="arrow" hidden><b>▲</b><span></span></div>
+  <div id="arrow" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5 19 19.5 12 15.8 5 19.5Z" fill="#36414a" stroke="#36414a" stroke-width="3" stroke-linejoin="round"/></svg><span></span></div>
   <div id="joy" hidden><div id="joyK"></div></div>
   <button id="btnAct" hidden>Examine</button>
   <div id="fade"></div>
@@ -348,6 +360,7 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 <script>
 (function(){
 'use strict';
+var MATCH=1;
 var PUBLIC_URL='';
 var GC=' The group chat says: Station Master Iyer is dead beside the signal cabin at Sundarpur Junction, and the Express comes at noon. Everybody come.';
 var AV=[
@@ -384,8 +397,8 @@ var AV=[
 ];
 var TRAIL=[
  {id:'rao',npc:'rao',x:18.5,z:18,rot:3,area:'cabin',place:'The signal cabin',who:'Constable Pandey',role:'The junction’s whole police force',
-  text:"Station Master Iyer was found at first light beside the signal cabin. It’s locked from the inside and the key is missing from his belt.",
-  more:"Check the ticket-office drawer, the telegraph slip, the crate in the scrap shed, the boot tracks, the water tower and Platform 1. Be quick. The killer has a ticket on the noon Express."},
+  text:"Iyer sahib is dead, right by the signal cabin. The door’s locked from inside and his key is gone.",
+  more:"Find the clues, and quickly. Whoever did it has a ticket on the noon Express."},
  {id:'kallu',npc:'kallu',x:-4.5,z:-16.6,rot:.3,area:'platform',place:'Kallu’s chai stall, Platform 1',who:'Kallu',role:'Chai since 1987, has never closed a day',
   text:"Chai ₹10, samosa ₹10, biscuit ₹5, water ₹5. Iyer sahib came for tea at six every morning. Today he didn’t.",
   more:"The biscuit’s for Moti, the stray dog.",sell:[['chai',10],['samosa',10],['biscuit',5],['water',5]]},
@@ -477,10 +490,10 @@ var CHESTS=[
 ];
 var CHI={};CHESTS.forEach(function(c){CHI[c.id]=c;});
 var DOORS=[
- {id:'d_ticket',room:'ticket',x:-17,z:-25.1,bx:-17,bz:-23.5,n:'the ticket office',in:'A queue of nobody, a rubber stamp, and a very patient clerk.'},
- {id:'d_tele',room:'tele',x:19,z:-25.1,bx:19,bz:-23.5,n:'the telegraph office',in:'Brass, wire, and the sound of nobody talking in dots.'},
- {id:'d_master',room:'master',x:-28,z:-25.1,bx:-28,bz:-23.5,n:'the Station Master’s office',in:'The tea glass on the desk is still half full. Nobody has dared to move it.'},
- {id:'d_shed',room:'shed',x:56,z:28.4,bx:56,bz:29.8,n:'the scrap shed',in:'A hammer on a hook and a very large amount of breakable junk. A sign says: SMASH ROOM. AUTHORISED VANDALISM ONLY.'}
+ {id:'d_ticket',room:'ticket',x:-17,z:-25.1,bx:-17,bz:-23.5,n:'the ticket office',in:'Quiet in here, just a rubber stamp on the counter.'},
+ {id:'d_tele',room:'tele',x:19,z:-25.1,bx:19,bz:-23.5,n:'the telegraph office',in:'Wires and a soft clicking sound.'},
+ {id:'d_master',room:'master',x:-28,z:-25.1,bx:-28,bz:-23.5,n:'the Station Master’s office',in:'His tea glass is still half full.'},
+ {id:'d_shed',room:'shed',x:56,z:28.4,bx:56,bz:29.8,n:'the scrap shed',in:'Smash Room. There’s a hammer on the hook.'}
 ];
 var NEEDC=4;
 var EXP={varsha:'Picks the new lock on the ticket-office drawer',samarth:'Breaks open the sealed crate in the scrap shed',riddhi:'Reads the boot tracks by the siding',naman:'Decodes the telegraph slip',shivika:'Climbs the water tower for the key'};
@@ -518,7 +531,17 @@ var CASE={
  lal:"Porters sleep at the east end. I saw the foreman’s lamp in the yard very late. It always is.",
  guard:"The night mail went through at ten past twelve. I saw Iyer sahib on the platform after it. Almost sure."
 };
-var DAY=["Iyer found the pasted page, then my receipts. Twenty-two wagons of railway brass, sold in Rampur. Every rupee went to my daughter Meena’s college fees. He said he’d tell Division at dawn. I only wanted him to wait a week, until her exams. The cabin key I threw up the water tower. I had a seat on the Express.","The pass is in my pocket and the Express is coming in. Here, take it. I was going to tell Meena myself. Let me do that."];
+var DAY=["Iyer found the pasted page, and then my receipts. Twenty-two wagons of brass, sold in Rampur. Every rupee went on Meena’s college fees. He said he’d tell Division at dawn. I only asked him to wait a week, till her exams were over. He wouldn’t. I threw the cabin key up the water tower. And yes, I had a seat on the Express.","Alright. Here’s my pass. I’m tired of running. I wanted to tell Meena myself, if you’ll let me."];
+var PROF={kallu:'Chappals, size 8 · Pours left-handed · Platform 1 stall',dsouza:'Leather shoes, size 9 · Right-handed · Ticket office',bhalla:'Walking boots, size 11, smooth soles · Right-handed · Came on the night mail',dayal:'Hobnail boots, size 11 · Left-handed · Goods yard'};
+if(MATCH){
+ SUS.forEach(function(q){q.prof=PROF[q.id];});
+ CLUES[0].raw=CLUES[0].raw.replace('A bent bit of wire is jammed','A bent bit of wire, twisted to the left, is jammed');
+ CLUES[1].read='Done in nine seconds. Inside is a timetable page pasted over with yard glue. The goods shunt says 11.45, but the real one left at 12.45. The glue and the new brass lock are both goods-yard stock.';
+ CLUES[2].read='Hobnail soles, size eleven, heavy on the left heel. Someone hurrying with a load.';
+ CLUES[3].read=CLUES[3].read.replace('Bhalla was still on the mail at 12.05, so it wasn’t him.','Bhalla was on the night mail at 12.05.');
+ CLUES[4].read=CLUES[4].read.replace(' It’s all the foreman’s.','');
+ CLUES[5].read='Nine seconds to the top. A brass key tagged CABIN, hung on wire twisted to the left.';
+}
 
 function mkState(){return {line:-1,hints:0,t0:0,t1:0,done:0,lost:0,el:0,team:[],me:'',players:[],hired:[],paidA:[],shots:[],acts:[],started:0,cash:0,coins:[],fog:[],areas:[],inv:[null,null,null,null,null],sel:0,spent:0,chests:[],gn:{},gear:[],met:[],brk:[],dog:0,made:0,clues:[],brief:0,thief:0,wrong:0,warn:0};}
 var GPX=0,GPZ=-15.5;
@@ -688,7 +711,7 @@ PAL.varsha={skin:0xc48f66,hair:0x2b1d18,top:0xf6c531,sleeve:0xf6c531,bottom:0x3b
   b.box(0,.74,0,.84,.46,.54,0x3b6fb8);b.box(0,1.08,.25,.5,.36,.04,0x3b6fb8);b.box(-.2,1.2,0,.1,.28,.54,0x3b6fb8);b.box(.2,1.2,0,.1,.28,.54,0x3b6fb8);
   b.box(0,.74,0,.9,.1,.58,0x5a3a22);b.box(.5,.46,.1,.18,.3,.3,0x8a5c34);b.box(-.5,.5,.1,.1,.22,.1,STL2);b.box(-.5,.4,.1,.08,.14,.08,GOLD);
   b.box(0,2.34,-.1,.42,.3,.42,0x2b1d18);b.box(0,2.02,.3,.9,.12,.12,0x23262e);b.box(-.22,1.98,.4,.24,.16,.04,0x9fd0d8);b.box(.22,1.98,.4,.24,.16,.04,0x9fd0d8);}};
-PAL.samarth={skin:0x9a6a45,hair:0x1b1b1b,top:0xc23b2b,sleeve:0x9a6a45,bottom:0xf3ead0,shorts:1,shoes:0x8a5c34,x:function(b){
+PAL.samarth={skin:0xc08560,hair:0x1b1b1b,top:0xc23b2b,sleeve:0xc08560,bottom:0xf3ead0,shorts:1,shoes:0x8a5c34,x:function(b){
   b.box(0,2.0,0,1.02,.4,.94,0xe8e0d0);b.box(0,2.2,0,1.04,.1,.96,0xc23b2b);b.box(.56,1.16,.04,.3,.2,.38,GOLD);
   b.box(0,1.56,.385,.5,.1,.02,0x1b1b1b);b.box(0,.74,0,.9,.1,.56,0xd9b46a);b.box(-.1,.9,0,.1,.5,.56,0xd9b46a);b.box(0,.4,0,.9,.24,.52,0xfdfaf2);}};
 PAL.riddhi={skin:0xd9a77a,hair:0x2b1d18,top:0x6b8e4e,sleeve:0x6b8e4e,bottom:0x8a7a4e,boots:1,shoes:0x5a3a22,x:function(b){
@@ -963,7 +986,7 @@ function mCrates(b,o){
 function mDrum(b,o){b.box(0,0,0,.9,1.2,.9,o.c||0x3b7dd8,.03);b.box(0,.4,0,1,.1,1,STL);b.box(0,.9,0,1,.1,1,STL);b.box(0,1.2,0,.7,.06,.7,STL2);}
 function mSacks(b,o){var i;for(i=0;i<6;i++)b.box((i%3)*.8-.8,Math.floor(i/3)*.5,(i%2)*.3,.8,.5,.55,[0xd9c9a0,0xc9b88a][i%2],.05);}
 function mSemaphore(b){
-  b.box(0,0,0,.3,5.4,.3,STL);b.box(.5,4.2,0,1.8,.4,.08,0xc23b2b);b.box(.2,4.2,0,.5,.4,.1,0xfdfaf2);b.box(1.2,4.2,0,.1,.4,.1,0xfdfaf2);
+  b.box(0,0,0,.3,5.4,.3,STL);
   b.box(0,3.4,.2,.5,.6,.3,0x23262e);b.box(0,3.5,.36,.28,.3,.04,0xff6b57);b.box(0,0,.18,.6,.4,.3,STL2);
 }
 function mShed(b){
@@ -1136,7 +1159,7 @@ function reveal(){
   for(x=cx-2;x<=cx+2;x++)for(z=cz-2;z<=cz+2;z++)if(x>=0&&x<20&&z>=0&&z<19&&!S.fog[z*20+x]){S.fog[z*20+x]=1;}
   for(i=0;i<AREAS.length;i++){a=AREAS[i];if(S.areas.indexOf(a.id)<0&&Math.hypot(P.x-a.x,P.z-a.z)<a.r){S.areas.push(a.id);ch=true;
     if(S.started){if(S.paidA.indexOf(a.id)<0)S.paidA.push(a.id);
-      say('<b>'+a.name+'.</b> '+a.note+' <b>+₹20</b>',6000,'New place');sfx.stage();}}}
+      say('<b>'+a.name+'</b> found. +₹20',2800,'New place');sfx.stage();}}}
   if(ch){savePos();chips();hud();}
 }
 function drawMap(){
@@ -1170,12 +1193,12 @@ function placeName(){if(inRoomNow)return inRoomNow.name;var best=null,bd=1e9;ARE
 function timeTxt(){var m=clockMin();return S.done?'':S.lost?' · Express gone':' · Express in '+Math.max(1,Math.ceil((720-m)*3/60))+' min';}
 
 function skyTick(){
-  var h=clockMin()/60,day=sm(5.5,7,h)*(1-sm(18.5,19.7,h)),warm=Math.max(sm(17,18.5,h)*(1-sm(18.9,19.9,h)),sm(5.3,6.1,h)*(1-sm(6.5,8,h)));
-  var sky=lerpc(lerpc(0x0b1a33,0xbfe6f2,day),0xffa868,warm*.85),ind=!!inRoomNow;
+  var h=clockMin()/60,day=sm(5.5,7,h)*(1-sm(18.5,19.7,h)),warm=Math.max(sm(17,18.5,h)*(1-sm(18.9,19.9,h)),sm(5.3,6.1,h)*(1-sm(6.5,8,h)),.8*(1-sm(7,9.2,h))),hard=sm(11,11.9,h);
+  var sky=lerpc(lerpc(0x0b1a33,0xbfe6f2,day),0xffa868,warm*.85),ind=!!inRoomNow;sky=lerpc(sky,0xf2efe2,hard*.45);
   if(ind&&!inRoomNow.out&&!shoot.on)sky=0x143440;waterMesh.visible=!ind;
   skyCol.setHex(sky);scene.fog.color.setHex(sky);
   hemiL.intensity=ind?.62:.3+.28*day;
-  sunL.intensity=ind?.5:.18+.46*day;sunL.color.setHex(ind?0xfff0d8:lerpc(lerpc(0x9fb4ff,0xffffff,day),0xff9a4d,warm*.8));
+  sunL.intensity=ind?.5:.18+.46*day+.2*hard;sunL.color.setHex(ind?0xfff0d8:lerpc(lerpc(0x9fb4ff,0xffffff,day),0xff9a4d,warm*.8));
   var th=Math.PI*Math.max(0,Math.min(1,(h-6)/12.75)),cx=Math.cos(th),sy=Math.sin(th);
   if(ind)sunL.position.set(CT.x+10,CT.y+30,CT.z+14);
   else if(day>.05)sunL.position.set(CT.x+cx*26,CT.y+Math.max(11,sy*32),CT.z+14);
@@ -1197,7 +1220,7 @@ function slab(x0,z0,x1,z1,y0,y1,c1,c2,tile){
   PLAT.push({x0:x0,x1:x1,z0:z0,z1:z1,y:y1});
 }
 /* ---------- building the junction ---------- */
-var pickT=0,pickSp=null,APP_=null,GB=[],EI={},NPCM={},BRKM=[],CRATEM=null,TRAINM=null,GOODSM=null,passPh=0,passT=0,passBlk=null,camHold=0,cineWas=false,CG={x:0,z:0,y:0},IN_=null,PK_=null;
+var SEMS=[],CROWD=[],pawM=[],lastReact={},reactN={},friendSaid={},nerveSaid=0,lastAny=0,dogHintT=0,ambS=null,lastBird=0,lastVend=0,rcAcc=0,pickT=0,pickSp=null,APP_=null,GB=[],EI={},NPCM={},BRKM=[],CRATEM=null,TRAINM=null,GOODSM=null,passPh=0,passT=0,passBlk=null,camHold=0,cineWas=false,CG={x:0,z:0,y:0},IN_=null,PK_=null;
 function fence(x0,z0,x1,z1){
   var L=Math.hypot(x1-x0,z1-z0),n=Math.max(1,Math.round(L/2.2)),i,cx,cz,mx=(x0+x1)/2,mz=(z0+z1)/2,ax=Math.abs(x1-x0)>Math.abs(z1-z0),b;
   for(i=0;i<=n;i++){cx=x0+(x1-x0)*i/n;cz=z0+(z1-z0)*i/n;chunk(cx,cz).box(cx,.5,cz,.2,1.4,.2,WOOD);}
@@ -1323,7 +1346,7 @@ function buildWorld(){
 }
 function dayalMove(){
   var m=NPCM.dayal,h=hsBy('dayal'),y=groundAt(12,-16.2),i;if(!m||!h)return;
-  m.position.set(12,y,-16.2);m.rotation.y=2.9;h.pos.set(12,y+2.3,-16.2);h.marker.position.set(12,y+3.2,-16.2);
+  m.position.set(12,y,-16.2);m.rotation.y=2.9;DY.x=12;DY.z=-16.2;DY.m=0;DY.t=1.2;DY.rot=2.9;h.pos.set(12,y+2.3,-16.2);h.marker.position.set(12,y+3.2,-16.2);
   for(i=0;i<chars.length;i++)if(chars[i].m===m)chars[i].y=y;
 }
 function addEnt(m,pts,sp,o){
@@ -1351,6 +1374,7 @@ function buildExtras(){
   for(i=0;i<4;i++)addEnt(solo(mBird,0,0,{}),ringPts(i%2?-30:30,i<2?-10:20,11+i*2,10),7+i,{fx:1,fy:6+i,off:i*9});
   TRAINM=solo(mTrain,-200,-7,{y:.64});TRAINM.visible=false;
   GOODSM=solo(mGoods,-260,-1.5,{y:.64});GOODSM.visible=false;
+  buildAmbient(W);
   var sp=[];for(i=0;i<180;i++){var a=rnd()*6.283,e=.08+rnd()*1.3;sp.push(Math.cos(a)*Math.cos(e)*280,Math.sin(e)*280,Math.sin(a)*Math.cos(e)*280);}
   var sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(sp,3));
   sunM=new THREE.Mesh(new THREE.SphereGeometry(9,18,12),new THREE.MeshBasicMaterial({color:0xfff6d0,fog:false}));
@@ -1413,11 +1437,11 @@ function trainTick(dt){
     if(S.pass||clockMin()<510||!sheet.hidden||inBand())return;
     passPh=1;passT=0;GOODSM.visible=true;GOODSM.position.x=-130;
     COL.push(passBlk={x0:-76,x1:76,z0:-9.5,z1:8.5});
-    say('The crossing bell is ringing. A goods train is coming through. Wait on either side of the tracks until it has gone past.',7500,'Station');sfx.bell();
+    say('A goods train is coming. Hold on.',3500,'Station');sfx.bell();
   }else if(passPh===1){
     passT+=dt;GOODSM.position.x=-130+passT*17.5;
     if(passT>2.2&&passT-dt<=2.2)sfx.bell();
-    if(passT>=16.5){passPh=2;GOODSM.visible=false;var k=COL.indexOf(passBlk);if(k>=0)COL.splice(k,1);passBlk=null;S.pass=1;saveState();say('The line is clear. You can cross.',3000,'Station');}
+    if(passT>=16.5){passPh=2;GOODSM.visible=false;var k=COL.indexOf(passBlk);if(k>=0)COL.splice(k,1);passBlk=null;S.pass=1;saveState();say('All clear, you can cross.',2000,'Station');}
   }
 }
 function cineOn(){if(!IN_){IN_=$('#intro');PK_=$('#pick');}return !IN_.hidden||!PK_.hidden;}
@@ -1475,6 +1499,142 @@ function pickTick(dt){
   }
   if(pickT<=0){if(pickSp){scene.remove(pickSp);pickSp=null;}if(armG){scene.remove(armG);armG=null;}}
 }
+
+/* ---------- ambience: crowd, signals, sounds, reactions, nerves, Moti ---------- */
+function buildAmbient(W){
+  var i,q,spots=[[-40.5,-19.8,0],[-31,-14.2,0],[-24,-19.8,0],[8,-20,0],[34,-19.6,0],
+    [-17,-14.2,570],[-8,-19.8,570],[27,-14.2,570],[40,-14.4,570],[14,-19.8,570],
+    [-27,-14.2,650],[3,-14.2,650],[19,-19.8,650],[37,-19.8,650]];
+  spots.forEach(function(p,j){var m=solo(mChar,p[0],p[1],Object.assign({rot:(j%5===0?.5:0)+(j%3?0:-.4),y:groundAt(p[0],p[1])},W[j%W.length]));chars.push({m:m,y:m.position.y,ph:j*1.3+.5});m.visible=p[2]===0;CROWD.push({m:m,at:p[2]});});
+  [[32,4.2],[-14,-3.8]].forEach(function(p){
+    var y=H(p[0],p[1])+4.4,gp=new THREE.Group(),arm=new THREE.Mesh(new THREE.BoxGeometry(1.8,.4,.08),new THREE.MeshLambertMaterial({color:0xc23b2b})),st=new THREE.Mesh(new THREE.BoxGeometry(.3,.4,.1),new THREE.MeshLambertMaterial({color:0xfdfaf2}));
+    arm.position.x=.5;st.position.x=.9;gp.add(arm);gp.add(st);gp.position.set(p[0],y,p[1]);gp.rotation.z=S.warn>=2?-.7:.55;scene.add(gp);SEMS.push({g:gp,to:S.warn>=2?-.7:.55});
+  });
+}
+function dropSignals(){SEMS.forEach(function(s){s.to=-.7;});}
+function whistle(){tone(740,1.3,'square',.04);tone(554,1.3,'square',.035,.03);tone(740,.5,'square',.03,1.5);}
+function bark(){tone(260,.08,'square',.05);tone(200,.1,'square',.05,.12);}
+function ambInit(){
+  if(ambS||!AC)return;
+  try{
+    var len=AC.sampleRate*3,buf=AC.createBuffer(1,len,AC.sampleRate),d=buf.getChannelData(0),i,src=AC.createBufferSource(),bp=AC.createBiquadFilter(),cg=AC.createGain();
+    for(i=0;i<len;i++)d[i]=Math.random()*2-1;
+    src.buffer=buf;src.loop=true;bp.type='bandpass';bp.frequency.value=520;bp.Q.value=.5;cg.gain.value=0;src.connect(bp);bp.connect(cg);cg.connect(master);src.start();
+    var o1=AC.createOscillator(),o2=AC.createOscillator(),hg=AC.createGain(),lf=AC.createOscillator(),lg=AC.createGain();
+    o1.frequency.value=55;o2.frequency.value=82.4;o1.type='sine';o2.type='triangle';hg.gain.value=0;lf.frequency.value=1.1;lg.gain.value=.02;
+    o1.connect(hg);o2.connect(hg);lf.connect(lg);lg.connect(hg.gain);hg.connect(master);o1.start();o2.start();lf.start();
+    ambS={cg:cg,hg:hg};
+  }catch(e){ambS=null;}
+}
+function ambTick(dt){
+  var m=clockMin(),h=m/60,live=!!S.started&&!S.done&&!S.lost,i,vis,r;
+  for(i=0;i<CROWD.length;i++){vis=m>=CROWD[i].at&&!cineOn();if(CROWD[i].m.visible!==vis)CROWD[i].m.visible=vis;}
+  for(i=0;i<SEMS.length;i++){r=SEMS[i];r.g.rotation.z+=(r.to-r.g.rotation.z)*Math.min(1,dt*2.5);}
+  if(!AC||muted)return;
+  ambInit();
+  if(ambS){
+    ambS.cg.gain.setTargetAtTime(inRoomNow?.01:.012+.05*sm(7.3,11.2,h),AC.currentTime,.9);
+    ambS.hg.gain.setTargetAtTime(live&&m>=680&&!inRoomNow?.04:0,AC.currentTime,.6);
+  }
+  if(S.started&&!paused&&!inRoomNow){
+    if(m<560&&T>lastBird){lastBird=T+2.5+rnd()*5;var f=2300+rnd()*900;tone(f,.05,'sine',.022);tone(f*1.25,.06,'sine',.02,.08);tone(f*.9,.05,'sine',.018,.17);}
+    if(m<600&&T>lastVend){lastVend=T+20+rnd()*10;tone(392,.4,'triangle',.035);tone(330,.55,'triangle',.035,.32);}
+  }
+}
+var RXN={
+ kallu:[["Chai? Hot and fresh. Bad news is free.","Iyer sahib never missed his six o’clock tea."],["Clock’s ticking, sahib. Tea won’t wait.","Everyone’s asking questions. Nobody’s buying chai."],["Chappals. Only chappals. I told you.","Sit, have a chai. You look like you’re onto something."],["I knew something was off with that man."]],
+ dsouza:[["Window closed. Ask me twice.","Thirty years, and someone breaks into my drawer."],["Hurry. The Express won’t wait for paperwork."],["Not my lock. I keep telling people."],["See? Not me."]],
+ bhalla:[["Batteries! Pens! Torches!","Three Bhallas, one cart."],["Buy something, sahib. Time is money."],["I got off at ten past twelve. Ask anyone."],["Business as usual. Mostly."]],
+ guard:[["Green flag, whistle, never wrong.","Night mail was on time. Almost."],["Express soon. Keep off the line."],["Good work, detective."],["Go on, he’s on Platform 1!"]],
+ lal:[["Chai for twine. Union rate.","The monsoon sets prices, not me."],["Lamps burn late in the yard. Always."],["Everybody’s boots leave marks, sahib."],["Justice, and still no chai."]],
+ rao:[["Notebook ready. Pen’s dry."],["Hurry. Noon comes fast."],["Enough clues? Then name him."],["Hold him. I’m coming."]],
+ dayal:[["Yard’s busy. Paper’s in order."],["Wagons won’t count themselves."],["Is the Express running late?"],["…"]]
+};
+var NERV=['kallu','dsouza','bhalla','dayal'];
+var FRX=[{w:'naman',x:19,z:-24,r:8,t:'Dots and dashes through the wall. I can almost hear them.'},{w:'shivika',x:-46,z:16,r:12,t:'That tower looks climbable. Barely.'},{w:'riddhi',x:37,z:9,r:10,t:'Heavy boots walked here. In a hurry.'},{w:'samarth',x:52,z:22,r:12,t:'Crates are my kind of problem.'},{w:'varsha',x:-17,z:-24,r:8,t:'That drawer lock is far too new.'}];
+function reactTick(dt){
+  if(!S.started||paused||!sheet.hidden||S.done||S.lost||shoot.on)return;
+  rcAcc+=dt;if(rcAcc<.5)return;rcAcc=0;
+  var i,id,m,d,st,L,t,f,a,n;
+  if(T-lastAny<7)return;
+  for(i=0;i<FRX.length;i++){f=FRX[i];if(friendSaid[f.w]||f.w===S.me||!hasAb(S,f.w))continue;
+    if(Math.hypot(P.x-f.x,P.z-f.z)<f.r&&(f.x<200)===(P.x<200)){friendSaid[f.w]=1;lastAny=T;a=avById(f.w);say(f.t,3600,a.nick);return;}}
+  st=S.thief?3:solvedN()>=4?2:clockMin()>=630?1:0;
+  for(id in RXN){m=NPCM[id];if(!m||(id==='dayal'&&S.thief))continue;
+    d=Math.hypot(P.x-m.position.x,P.z-m.position.z);
+    if(d<5.2&&T-(lastReact[id]||-99)>45){
+      L=RXN[id][Math.min(st,RXN[id].length-1)];n=reactN[id]=(reactN[id]||0)+1;t=L[(n-1)%L.length];
+      lastReact[id]=T;lastAny=T;say(t,3200,TRAIL[TIDX[id]].who);return;}}
+}
+function nerveTick(dt){
+  if(!S.brief||paused||!S.started)return;
+  var i,id,m,d,home,aw,df,ac;
+  for(i=0;i<NERV.length;i++){id=NERV[i];m=NPCM[id];if(!m)continue;
+    if(id==='dayal'&&S.thief){m.rotation.z=0;continue;}
+    d=Math.hypot(P.x-m.position.x,P.z-m.position.z);
+    if(d<8&&!S.done){
+      m.rotation.z=RM?0:Math.sin(T*9+i*2)*(id==='dayal'?.07:.035);
+      if(id==='dayal'){
+        aw=Math.atan2(m.position.x-P.x,m.position.z-P.z);df=aw-m.rotation.y;while(df>Math.PI)df-=6.2832;while(df<-Math.PI)df+=6.2832;m.rotation.y+=df*Math.min(1,dt*2.2);
+        if(!nerveSaid&&d<6){nerveSaid=1;say('Dayal checks his pocket twice and looks away.',3800,'You notice');}
+      }
+    }else{
+      m.rotation.z*=.8;
+      if(id==='dayal'){home=TRAIL[TIDX.dayal].rot;df=home-m.rotation.y;while(df>Math.PI)df-=6.2832;while(df<-Math.PI)df+=6.2832;m.rotation.y+=df*Math.min(1,dt*1.5);}
+    }
+  }
+}
+function pawTick(dt){
+  var i,p,t,e,dx,dz,l,n,h,gl,k,px,pz,perp,j,pm;
+  for(i=pawM.length-1;i>=0;i--){p=pawM[i];
+    if(T<p.t0){continue;}
+    p.m.visible=true;
+    if(T>p.t1){scene.remove(p.m);pawM.splice(i,1);}
+    else if(T>p.t1-3)p.m.scale.setScalar(Math.max(.01,(p.t1-T)/3));}
+  if(!S.dog||!dogM||paused||!S.started||S.done||S.lost||!sheet.hidden||inRoomNow)return;
+  if(!dogHintT){dogHintT=T+14;return;}
+  if(T<dogHintT)return;
+  gl=nextGoal();h=hsBy(gl.id);
+  if(!h||h.pos.x>=200){dogHintT=T+12;return;}
+  dx=h.pos.x-dogM.position.x;dz=h.pos.z-dogM.position.z;l=Math.hypot(dx,dz);
+  if(l<9){dogHintT=T+12;return;}
+  dogHintT=T+45;bark();
+  dx/=l;dz/=l;n=Math.min(10,Math.floor(l/2.4));perp=[-dz,dx];
+  for(k=1;k<=n;k++){
+    px=dogM.position.x+dx*k*2.4+perp[0]*(k%2?.35:-.35);pz=dogM.position.z+dz*k*2.4+perp[1]*(k%2?.35:-.35);
+    pm=new THREE.Group();var mat=new THREE.MeshLambertMaterial({color:0x4a3426}),pad=new THREE.Mesh(new THREE.BoxGeometry(.24,.05,.22),mat);pm.add(pad);
+    [[-.13,.2],[0,.25],[.13,.2]].forEach(function(q){var t=new THREE.Mesh(new THREE.BoxGeometry(.09,.05,.09),mat);t.position.set(q[0],0,q[1]);pm.add(t);});
+    pm.position.set(px,groundAt(px,pz)+.04,pz);pm.rotation.y=Math.atan2(dx,dz);pm.visible=false;scene.add(pm);
+    pawM.push({m:pm,t0:T+k*.22,t1:T+24});
+  }
+  say('Moti’s found something. Follow him.',3000,'Moti');
+}
+var CEL=0;
+function celebrate(){CEL=T;sfx.stage();setTimeout(function(){sfx.found();},350);setTimeout(function(){sfx.stage();},900);confetti(60);say('All five together!',4000,'Party');}
+function confetti(n){var c=['#e2492f','#f4b12e','#3fae4a','#39b6c8','#8e44ad','#fff'],a=$('#app'),i,d;for(i=0;i<n;i++){d=document.createElement('i');d.className='cf';d.style.left=(Math.random()*100)+'%';d.style.background=c[i%6];d.style.animationDelay=(Math.random()*1.2)+'s';d.style.animationDuration=(2+Math.random()*1.6)+'s';a.appendChild(d);(function(e){setTimeout(function(){e.remove();},4500);})(d);}}
+function danceTick(){
+  var e=T-CEL,n=fol.length,i,m,a,r=2.1;
+  if(!CEL||e>5.5)return;
+  for(i=0;i<n;i++){m=fol[i].m;a=T*2.4+i*6.2832/Math.max(1,n);m.position.x=P.x+Math.cos(a)*r;m.position.z=P.z+Math.sin(a)*r;m.position.y=groundAt(m.position.x,m.position.z)+Math.abs(Math.sin(T*9+i*1.3))*.55;m.rotation.y=T*6+i;}
+  if(lead){lead.position.y=P.y+Math.abs(Math.sin(T*9))*.6;lead.rotation.y=-T*6;}
+}
+var DPTS=[[12,-16.2],[22,-15],[5,-17.5],[29,-16.5],[16,-18.5]],DY={m:0,t:1.2,x:12,z:-16.2,tx:12,tz:-16.2,rot:2.9};
+function dayalTick(dt){
+  var m=NPCM.dayal,h=hsBy('dayal'),dx,dz,d,best,bd,i,pd,y;
+  if(!m||!h||!S.thief||S.done||S.lost)return;
+  pd=Math.hypot(P.x-DY.x,P.z-DY.z);
+  if(DY.m===0){
+    DY.t-=dt;m.rotation.y=DY.rot+Math.sin(T*2.8)*1.3;m.rotation.z=Math.sin(T*28)*.035;
+    if(DY.t<=0||pd<3){best=0;bd=-1;for(i=0;i<DPTS.length;i++){d=Math.hypot(DPTS[i][0]-P.x,DPTS[i][1]-P.z);if(Math.hypot(DPTS[i][0]-DY.x,DPTS[i][1]-DY.z)>4&&d>bd){bd=d;best=i;}}DY.tx=DPTS[best][0];DY.tz=DPTS[best][1];DY.m=1;}
+  }else{
+    dx=DY.tx-DY.x;dz=DY.tz-DY.z;d=Math.hypot(dx,dz);m.rotation.z=0;
+    if(d<.3){DY.m=0;DY.t=1.6;DY.rot=m.rotation.y;}
+    else{DY.x+=dx/d*Math.min(d,3.6*dt);DY.z+=dz/d*Math.min(d,3.6*dt);m.rotation.y=Math.atan2(dx,dz);}
+  }
+  y=groundAt(DY.x,DY.z)+(DY.m?Math.abs(Math.sin(T*12))*.12:Math.abs(Math.sin(T*9))*.04);
+  m.position.set(DY.x,y,DY.z);h.pos.set(DY.x,y+2.3,DY.z);h.marker.position.set(DY.x,y+3.2,DY.z);
+}
+function worldTick(dt){ambTick(dt);pawTick(dt);danceTick();dayalTick(dt);}
 
 function inFrame(x,y,z,d){pv3.set(x,y,z);if(pv3.distanceTo(pcam.position)>d)return false;pv3.project(pcam);return pv3.z<1&&Math.abs(pv3.x)<.82&&Math.abs(pv3.y)<.82;}
 function subjects(){
@@ -1562,7 +1722,7 @@ function frame(t){
     for(i=0;i<coinM.length;i++)if(coinM[i]&&coinM[i].visible)coinM[i].rotation.y+=dt*3;
     if(crab){crab.position.x=crabHome.x+Math.sin(T*.7)*1.1;crab.position.z=crabHome.z-Math.sin(T*.7)*1.1;}
   }
-  entTick(now);s3Frame(dt);debrisTick(dt);trainTick(dt);pickTick(dt);
+  entTick(now);s3Frame(dt);debrisTick(dt);trainTick(dt);pickTick(dt);worldTick(dt);
   for(i=0;i<bobs.length;i++)bobs[i].position.y=waterMesh.position.y-.12;
   tick+=dt;
   if(tick>.2){tick=0;if(!paused){
@@ -1638,7 +1798,9 @@ function init3D(){
 var sheet=$('#sheet'),sheetIn=$('#sheetIn'),scrim=$('#scrim'),toastT=0,gpUrl='',NEEDB=5;
 function openSheet(html){sheetIn.innerHTML=html;sheet.hidden=false;scrim.hidden=false;sheet.scrollTop=0;sheet.style.animation='none';void sheet.offsetWidth;sheet.style.animation='';}
 function closeSheet(){sheet.hidden=true;scrim.hidden=true;sheetIn.innerHTML='';announce();}
-function say(t,ms,who){var el=$('#toast');el.innerHTML='<i>'+(who||'Junction')+'</i>'+t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on');},ms||5200);}
+function say(t,ms,who){var el=$('#toast');el.innerHTML='<i>'+(who||'Junction')+'</i>'+t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on');},Math.min(ms||3000,4000));}
+sfx.coin=function(){tone(880,.06,'square',.07);tone(1320,.16,'square',.07,.06);};
+function popFx(h){var d=document.createElement('div'),c=$('#cash');d.className='popfx';d.innerHTML=h;$('#app').appendChild(d);setTimeout(function(){d.remove();},1400);c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');}
 var faces={};function face(id){return faces[id]||(faces[id]=portrait(id));}
 
 function actScene(who){
@@ -1703,7 +1865,7 @@ function takeItem(k,n){
   for(var i=4;i>=0&&n>0;i--){var s=S.inv[i];if(s&&s[0]===k){var a=Math.min(n,s[1]);s[1]-=a;n-=a;if(!s[1])S.inv[i]=null;}}
   hotbar();return true;
 }
-function full(){say('Your hands are full. Tap a slot twice to put something down.',4500,'Five slots');}
+function full(){say('Your hands are full.',2500,'Slots');}
 function hotbar(){
   var h='',i,s;
   for(i=0;i<5;i++){s=S.inv[i];h+='<button data-s="'+i+'" class="'+(S.sel===i?'on':'')+'" aria-label="'+(s?ITEMS[s[0]].n+', '+s[1]:'Empty slot')+'">'+(s?'<img alt="" src="'+icon(s[0])+'">'+(s[1]>1?'<em>'+s[1]+'</em>':''):'')+'</button>';}
@@ -1713,7 +1875,7 @@ function itemView(i){
   var s=S.inv[i];if(!s)return;
   openSheet('<p class="where">In your hand</p><div class="rc">'+ic(s[0])+'<b>'+ITEMS[s[0]].n+(s[1]>1?' × '+s[1]:'')+'</b></div><p>'+ITEMS[s[0]].d+'</p><button class="btn ghost" data-act="drop" data-i="'+i+'">Put one down</button><button class="btn" data-act="close">Keep it</button>');
 }
-function dropItem(i){var s=S.inv[i];if(!s)return;s[1]--;if(!s[1])S.inv[i]=null;saveState();hotbar();closeSheet();say('You leave it on a ledge. A pigeon is already looking at it.',3500,'Put down');}
+function dropItem(i){var s=S.inv[i];if(!s)return;s[1]--;if(!s[1])S.inv[i]=null;saveState();hotbar();closeSheet();say('Left it there.',1800,'Slots');}
 function price(p){return hasAb(S,'samarth')?Math.max(5,p-5):p;}
 function row(k,label,btn){return '<div class="rc">'+(ICON[k]?ic(k):'')+'<b>'+label+'</b>'+(btn||'')+'</div>';}
 function nodeReady(id){var t=S.gn[id];return !t||Date.now()-t>90000;}
@@ -1745,26 +1907,26 @@ function craft(k,w){
   r.need.forEach(function(q){if(ok&&!takeItem(q,1))ok=false;});
   if(ok&&!addItem(k,1))ok=false;
   if(!ok){S.inv=JSON.parse(snap);hotbar();return;}
-  S.made++;saveState();sfx.stage();hud();craftView(w);say('<b>'+ITEMS[k].n+'.</b> '+ITEMS[k].d,5000,'Made');
+  S.made++;saveState();sfx.stage();hud();craftView(w);say('<b>Made: '+ITEMS[k].n+'</b>',2500,'Craft');
 }
 function buy(id,k){
   var t=TRAIL[TIDX[id]],s=(t.sell||[]).filter(function(q){return q[0]===k;})[0];if(!s)return;
   var p=price(s[1]);recalc();if(S.cash<p)return;
   if(!addItem(k,1)){full();return;}
-  S.spent+=p;saveState();sfx.found();hud();trailView(id);
+  S.spent+=p;saveState();sfx.coin();hud();popFx(ic(k)+'<b>'+ITEMS[k].n+'</b><em>−₹'+p+'</em>');trailView(id);
 }
 function swap(id){
   var t=TRAIL[TIDX[id]],g=t.swap[0],r=t.swap[1];if(cnt(g)<1)return;
   if(!ITEMS[r]){if(S.gear.indexOf(r)>=0)return;takeItem(g,1);S.gear.push(r);saveState();sfx.stage();closeSheet();if(r==='map')grantGuide();hud();
-    say('The whole map opens up. Guard Sahib drinks the chai in one go and goes back to being never wrong.',6000,t.who);return;}
+    say('Here, take my map.',2500,t.who);return;}
   takeItem(g,1);if(!addItem(r,1)){addItem(g,1);full();return;}
-  saveState();sfx.found();hud();trailView(id);
+  saveState();sfx.coin();hud();popFx(ic(r)+'<b>'+ITEMS[r].n+'</b><em>swapped</em>');trailView(id);
 }
 function freeTake(id){
   var t=TRAIL[TIDX[id]];
-  if(cnt(t.free)>=2){say('Two sticks is plenty. Three is a hobby.',4000,t.who);return;}
+  if(cnt(t.free)>=2){say('You’ve got enough.',2000,t.who);return;}
   if(!addItem(t.free,1)){full();return;}
-  saveState();sfx.found();hud();trailView(id);
+  saveState();sfx.coin();hud();popFx(ic(t.free)+'<b>'+ITEMS[t.free].n+'</b><em>free</em>');trailView(id);
 }
 function trailView(id){
   var t=TRAIL[TIDX[id]];
@@ -1796,14 +1958,15 @@ function give(id){
   saveState();sfx.open();closeSheet();
   if(id==='naman')grantGuide();
   hud();
-  say(a.thanks,7500,a.nick);
+  say(a.thanks,4000,a.nick);
+  if(S.team.length>=5&&!S.celeb){S.celeb=1;saveState();setTimeout(celebrate,1800);}
   var c=CLUES.filter(function(q){return q.ex===id&&S.clues.indexOf(q.id)>=0;})[0];
   if(c)setTimeout(function(){if(sheet.hidden&&!paused)clueView(c.id);},1400);
 }
 function feedDog(){
-  if(!takeItem('biscuit',1)){say('He looks at your hands, then your face, then your hands. Kallu sells biscuits, five rupees.',5200,'Moti the stray');return;}
+  if(!takeItem('biscuit',1)){say('Moti wants a biscuit. Kallu sells them for ₹5.',3000,'Moti');return;}
   S.dog=1;if(EI.dog!=null)ENT[EI.dog].stop=true;saveState();sfx.stage();hud();
-  say('Gone in one bite. Moti has appointed himself your guide and will run ahead towards wherever you are going next.',7000,'Moti the stray');
+  say('Moti’s your friend now. He’ll lead the way.',3000,'Moti');
 }
 var DEB=[],debM={},BRKCOL={pot:[0xb5532f,0xd9784a,0x8a3a22,0xe8c9a0],drum:[0x3b7dd8,0x6b7785,0x9aa4ad,0x23262e],box:[0x9b7448,0x7a5530,0xc9a070,0x5a3a22]};
 function burst(p,cols,n){for(var i=0;i<n;i++){var c=cols[i%cols.length],s=.14+Math.random()*.24;var m=new THREE.Mesh(new THREE.BoxGeometry(s,s,s),debM[c]||(debM[c]=new THREE.MeshBasicMaterial({color:c})));m.position.set(p.x,p.y+.5+Math.random()*.7,p.z);scene.add(m);DEB.push({m:m,vx:(Math.random()-.5)*8,vy:3+Math.random()*5,vz:(Math.random()-.5)*8,t:1.7,rx:Math.random()*9,rz:Math.random()*9});}}
@@ -1811,9 +1974,9 @@ function debrisTick(dt){for(var i=DEB.length-1;i>=0;i--){var d=DEB[i],m=d.m;d.t-
 function smash(h){
   var i=+h.id.slice(1),n,left;if(S.brk.indexOf(i)>=0)return;
   S.brk.push(i);n=S.brk.length;if(BRKM[i]){burst(BRKM[i].position,BRKCOL[BRKS[i][2]]||BRKCOL.box,18);BRKM[i].visible=false;}var gl=$('#gl');gl.classList.remove('shk');void gl.offsetWidth;gl.classList.add('shk');saveState();sfx.bad();tone(110,.14,'square',.1);tone(70,.2,'sawtooth',.06,.05);hud();
-  if(n===NEEDB){sfx.open();say('<b>Crunch.</b> The junk falls away from a big crate stamped DAYAL YARD. Eleven rivets hold the lid. Somebody strong could open that.',8500,'Smash room');hintId='manifest';hintT=T+120;}
-  else if(n<NEEDB)say(['Clang!','Smash! A pot becomes several pots.','The drum goes bong, then goes quiet.','That felt better than it should have.','Crash. Something is shifting under the pile.'][n%5]+' <b>+₹3</b>',2600,'Smash room');
-  else say(['Clang!','Smash!','Crack.','That one was already broken. Now it is thorough.'][n%4]+' <b>+₹3</b>',2200,'Smash room');
+  if(n===NEEDB){sfx.open();say('<b>Crunch!</b> There’s a sealed crate under all that. Samarth could open it.',4000,'Smash room');hintId='manifest';hintT=T+120;}
+  else if(n<NEEDB)say(['Clang!','Smash!','Bong.','Crash!','Something shifts.'][n%5]+' <b>+₹3</b>',2600,'Smash room');
+  else say(['Clang!','Smash!','Crack.','Thorough.'][n%4]+' <b>+₹3</b>',2200,'Smash room');
 }
 function doorGo(h){
   var d=DOORS.filter(function(q){return q.id===h.id;})[0],r=ROOMS[d.room];
@@ -1866,7 +2029,7 @@ function hud(){
   $('#cash').textContent='₹'+S.cash;
   $('#bookN').textContent=solvedN();
   $('#obj').classList.toggle('urgent',!!S.started&&!S.done&&!S.lost&&clockMin()>=680);
-  HS.forEach(function(h){h.marker.visible=hsActive(h);});
+  HS.forEach(function(h){h.marker.visible=hsActive(h)&&h.type!=='look';});
   if(CRATEM)CRATEM.visible=S.brk.length>=NEEDB;
   hotbar();
 }
@@ -1874,7 +2037,7 @@ function askGame(){
   if(S.done){say('Case closed. The rest of the day is yours.',4200,'Sundarpur Junction');return;}
   var g=nextGoal();S.hints++;saveState();
   hintId=route(g.id);hintT=T+(keepArrow()?900:150);
-  say(g.t+'.'+(g.id?' <b>Follow the arrow.</b>':''),6500,'Where next');
+  say(g.t,3000,'Next');
 }
 function lookView(id){
   var l=LOOKS[id],fresh=S.acts.indexOf(id)<0;
@@ -1900,13 +2063,28 @@ function solvedN(){return CLUES.filter(solved).length;}
 function clueView(id){
   var c=clueOf(id),fresh=S.clues.indexOf(id)<0,a;if(!c)return;
   if(id==='photo'&&fresh){openSheet('<p class="where">Platform 1</p><h2>The platform clock</h2><p>It hangs high on its bracket, too far up to see properly from down here. Something about it caught your eye. A close-up would let you look.</p><p class="note">Tap the camera, point it at the clock and press the white button.</p><button class="btn" data-act="close">Okay</button>');return;}
-  if(id==='manifest'&&S.brk.length<NEEDB){say('Junk is piled on top of it. There is a sledgehammer on the hook. Smash some of it.',5000,'Scrap shed');return;}
+  if(id==='manifest'&&S.brk.length<NEEDB){say('Smash that junk first.',2800,'Scrap shed');return;}
   if(fresh){S.clues.push(id);saveState();sfx.found();}
   var h='<p class="where">'+c.w+'</p><h2>'+c.t+'</h2><p>'+c.raw+'</p>';
+  if(c.id==='telegram'&&hasAb(S,'naman')&&!S.morse){morseView(h);return;}
   if(c.ex){a=avById(c.ex);
     if(hasAb(S,c.ex))h+=actScene(c.ex)+abLine(c.ex,c.read);
     else h+='<p class="note">'+a.nick+' would know what to make of this. '+(a.she?'She':'He')+' is at '+a.where+'.</p>';}
   openSheet(h+'<button class="btn" data-act="close">'+(fresh?'Noted':'Okay')+'</button>');hud();
+}
+var MIN='';
+function morseDraw(){var t='.-.',i,o='';for(i=0;i<3;i++){o+='<span class="ms'+(MIN.length>i?' on':'')+'">'+(t[i]==='.'?'●':'▬')+'</span>';}$('#mrs').innerHTML=o;}
+function morseView(h){
+  MIN='';
+  openSheet(h+'<div class="act"><img alt="" src="'+face('naman')+'"><p><b>Naman:</b> The sounder needs a reply before it gives up the message. Send R: dot, dash, dot.</p></div><div id="mrs" class="mrs"></div><div class="mkey"><button class="btn" data-act="mk" data-s=".">● Dot</button><button class="btn" data-act="mk" data-s="-">▬ Dash</button></div>');
+  morseDraw();
+}
+function morseKey(s){
+  if(s==='.')tone(700,.09,'sine',.12);else tone(700,.28,'sine',.12);
+  MIN+=s;morseDraw();
+  if(MIN.length<3)return;
+  if(MIN==='.-.'){S.morse=1;saveState();setTimeout(function(){sfx.stage();clueView('telegram');},450);}
+  else{sfx.bad();setTimeout(function(){MIN='';morseDraw();},500);}
 }
 function accuse(id){
   var n=solvedN(),s=SUS.filter(function(q){return q.id===id;})[0],t=TRAIL[TIDX[id]];
@@ -1936,16 +2114,26 @@ function chooseEnd(k){
 }
 function groupShot(){
   if(!renderer||!pcam||!lead||!sunM)return '';
-  var url='',keep=[],k=S.line>0?S.line:0,y=groundAt(GPX,GPZ),tv=TRAINM?TRAINM.visible:false;
+  var url='',keep=[],y=groundAt(GPX,GPZ),tv=TRAINM?TRAINM.visible:false,cuffs=[],dm=NPCM.dayal,rm=NPCM.rao,old=[VW,VH];
+  var POSE={varsha:[-4.3,0,.35,.16,1,0,1],riddhi:[-2.8,1,.25,0,.82,0,1],samarth:[-1.4,0,0,0,1,0,1.18],shivika:[.05,-.2,-.15,-.16,1,.9,1],naman:[1.5,0,-.35,.2,1,0,1]};
+  function snap(m){keep.push([m,m.position.clone(),m.rotation.y,m.rotation.z,m.rotation.x,m.scale.clone(),m.visible]);m.visible=true;}
   try{
-    AV.forEach(function(a,j){var m=a.id===S.me?lead:helpers[a.id];if(!m)return;keep.push([m,m.position.clone(),m.rotation.y,m.visible]);m.visible=true;m.position.set(GPX+(j-2)*1.05,y,GPZ);m.rotation.y=0;m.updateMatrixWorld(true);});
+    AV.forEach(function(a){var m=a.id===S.me?lead:helpers[a.id],p=POSE[a.id];if(!m||!p)return;snap(m);m.position.set(GPX+p[0],y+p[5],GPZ+p[1]);m.rotation.y=p[2];m.rotation.z=p[3];m.rotation.x=0;m.scale.set(p[6],p[4],p[6]);m.updateMatrixWorld(true);});
+    if(rm){snap(rm);rm.position.set(GPX+3.1,y,GPZ);rm.rotation.y=-.45;rm.rotation.z=0;rm.updateMatrixWorld(true);}
+    if(dm){snap(dm);dm.position.set(GPX+4.4,y,GPZ);dm.rotation.y=.3;dm.rotation.x=.14;dm.rotation.z=0;
+      [-.17,.17].forEach(function(x){var c=new THREE.Mesh(new THREE.BoxGeometry(.2,.14,.2),new THREE.MeshLambertMaterial({color:0x2b2f36}));c.position.set(x,.85,.3);dm.add(c);cuffs.push(c);});
+      var ch=new THREE.Mesh(new THREE.BoxGeometry(.2,.04,.04),new THREE.MeshLambertMaterial({color:0xc8ccd2}));ch.position.set(0,.85,.32);dm.add(ch);cuffs.push(ch);
+      dm.updateMatrixWorld(true);}
     if(TRAINM)TRAINM.visible=false;
     shoot.on=true;scene.fog.near=90;scene.fog.far=360;cloudMesh.visible=true;MK.visible=false;if(pin)pin.visible=false;
-    pcam.position.set(GPX-(k===1?1.4:0),y+(k===1?1.2:2.1),GPZ+(k===1?9:9.5));pcam.rotation.set(k===1?-.05:.04,0,0);pcam.fov=k===2?54:58;pcam.updateProjectionMatrix();
+    renderer.setSize(1280,720,false);pcam.aspect=16/9;
+    pcam.position.set(GPX+.1,y+1.55,GPZ+10.5);pcam.rotation.set(.02,0,0);pcam.fov=40;pcam.updateProjectionMatrix();
     skyTick();pcam.updateMatrixWorld();renderer.render(scene,pcam);url=renderer.domElement.toDataURL('image/jpeg',.9)||'';
   }catch(e){url='';}
+  cuffs.forEach(function(c){dm.remove(c);});
+  try{renderer.setSize(old[0],old[1],false);pcam.aspect=old[0]/old[1];pcam.updateProjectionMatrix();}catch(e){}
   if(TRAINM)TRAINM.visible=tv;
-  keep.forEach(function(q){if(q[0]===lead)return;q[0].position.copy(q[1]);q[0].rotation.y=q[2];q[0].visible=q[3];q[0].updateMatrixWorld(true);});
+  keep.forEach(function(q){q[0].position.copy(q[1]);q[0].rotation.y=q[2];q[0].rotation.z=q[3];q[0].rotation.x=q[4];q[0].scale.copy(q[5]);q[0].visible=q[6];q[0].updateMatrixWorld(true);});
   try{exitShoot();}catch(e){shoot.on=false;}
   return url;
 }
@@ -1956,13 +2144,14 @@ function shareText(){
 }
 function finale(){
   var e=ENDS[S.line>=0?S.line:0],mins=Math.max(1,Math.round(((S.t1||Date.now())-(S.t0||Date.now()))/60000)),w=S.wrong||0;
-  if(!gpUrl){gpUrl=groupShot();if(gpUrl)photos.unshift({url:gpUrl,cap:'All five on Platform 1, Sundarpur Junction'});}
+  if(!gpUrl){gpUrl=groupShot();if(gpUrl)photos.unshift({url:gpUrl,cap:'Case closed. Dayal in cuffs, Constable Pandey beside him'});}
   var lines=['The pasted timetable goes into an evidence envelope. Under it, in Iyer sahib’s tidy blue ink, is the real one.',e.say,
     'Miss Meena Dayal hears it from her father in person, the way he wanted. The Railway Welfare Fund, after a very long letter from Constable Pandey, agrees to look into her fees.',
     'The Express leaves on time for the first time since Diwali, minus one passenger and plus a great deal of gossip.',
     'Everybody turns up for the photo, including the ones who were busy.'];
   var h='<p class="where">Platform 1, noon</p><h1>Case closed.</h1>';
-  if(gpUrl)h+='<img class="fl" alt="The group photo: five friends on Platform 1 with the station behind them" src="'+gpUrl+'" style="display:block;width:100%;border-radius:10px;border:6px solid #fff8ea;box-sizing:border-box;margin:6px 0 12px">';
+  if(gpUrl)h+='<img class="fl" alt="The group photo: the friends on Platform 1, with Dayal in cuffs beside Constable Pandey" src="'+gpUrl+'" style="display:block;width:100%;border-radius:10px;border:6px solid #fff8ea;box-sizing:border-box;margin:6px 0 12px">';
+  if(S.team.length>=5)h+='<div class="dance">'+AV.map(function(a){return '<img alt="" src="'+face(a.id)+'">';}).join('')+'</div>';
   lines.forEach(function(l,i){h+='<p class="fl" style="animation-delay:'+(i*.8)+'s">'+l+'</p>';});
   h+='<blockquote class="fl" style="animation-delay:4s">“The clock was wrong, the paper was right, and the glue was on his hands.” Constable Pandey, writing it down slowly.</blockquote>';
   h+='<div class="fl" style="animation-delay:4.6s"><div class="rank">'+(w?'Got there in the end':'Detective, first class')+'</div><div class="stats"><div><b>'+mins+'</b><small>minutes</small></div><div><b>'+solvedN()+'/'+CLUES.length+'</b><small>clues read</small></div><div><b>'+w+'</b><small>wrong guesses</small></div></div><p>Played as '+teamNames()+'. You found '+S.areas.length+' of '+AREAS.length+' places, read '+S.acts.length+' of '+LOOKN+' signs and asked the way '+S.hints+' times.</p>';
@@ -1990,13 +2179,14 @@ function clockTick(){
   if(!S.started||S.done)return;
   var m=clockMin(),k;
   if(TRAINM&&m>=705&&!S.lost||(S.lost&&TRAINM)){
-    if(!TRAINM.visible){TRAINM.visible=true;sfx.bell();camHold=T+6;say('The Express is whistling in to Platform 1. This is the train he is waiting for.',5200,'Station');}
+    if(!TRAINM.visible){TRAINM.visible=true;sfx.bell();camHold=T+6;say('The Express is here.',3000,'Station');}
     k=S.lost?1:Math.min(1,(m-705)/14);TRAINM.position.x=-205+239*sm(0,1,k);
   }
   if(S.lost)return;
-  if(m>=600&&S.warn<1){S.warn=1;say('Ten o’clock. Two hours to the Express. Every minute here is a minute the killer has.',5500,'Constable Pandey');}
-  else if(m>=630&&S.warn<2){S.warn=2;say('Half past ten. An hour and a half to the Express. The signal arm has gone up on its own.',5500,'Constable Pandey');}
-  else if(m>=680&&S.warn<3){S.warn=3;say('Two minutes left. You can hear the Express whistling from the next station.',6000,'Constable Pandey');}
+  if(m>=570&&!S.evc){S.evc=1;saveState();say('Passengers are arriving.',2500,'Station');}
+  if(m>=600&&S.warn<1){S.warn=1;say('It’s ten already. Two hours till the Express.',3000,'Constable Pandey');}
+  else if(m>=630&&S.warn<2){S.warn=2;dropSignals();say('The signal’s down. The Express is close, hurry up.',3000,'Constable Pandey');}
+  else if(m>=680&&S.warn<3){S.warn=3;whistle();say('Two minutes left! Who did it?',3000,'Constable Pandey');}
   if(m>=720){
     S.lost=1;COL.push({x0:-30,x1:38,z0:-8.5,z1:-5.5});saveState();sfx.bad();hud();
     if(shoot.on)exitShoot();
@@ -2019,11 +2209,11 @@ function bookView(tab){
           :'<div class="row"><span class="mk">·</span><span>Not found yet<small>Look '+c.at+'.</small></span></div>';
       });
       h+='<p class="grp">Who did it?</p>';
-      if(!S.thief)h+='<p>'+(n>=NEEDC?'You have enough to make a guess. Tap the one you think killed Iyer. A wrong guess costs ₹10 and an apology. Read every clue and the picture gets a lot clearer.':'Read '+(NEEDC-n)+' more clue'+(NEEDC-n>1?'s':'')+' before you point at anybody.')+'</p>';
+      if(!S.thief)h+='<p>'+(n>=NEEDC?'You have enough to make a guess. Tap the one you think killed Iyer. A wrong guess costs ₹10 and an apology. Read every clue and the picture gets a lot clearer.':'Read '+(NEEDC-n)+' more clue'+(NEEDC-n>1?'s':'')+' before you point at anybody.')+(MATCH?' Match the clues to each suspect’s file.':'')+'</p>';
       h+='<div class="sus">';
       SUS.forEach(function(s){
-        var t=TRAIL[TIDX[s.id]],cl=n>=CLUES.length&&!!s.by&&solved(clueOf(s.by)),got=S.thief&&s.id==='dayal';
-        h+='<button data-act="accuse" data-id="'+s.id+'"'+(S.thief||cl||n<NEEDC?' disabled':'')+'><img alt="" src="'+face(t.npc)+'">'+t.who+'<small style="display:block;font-weight:400;color:var(--mute)">'+(got?'Named':cl?'Cleared: '+s.why:'Was around last night')+'</small></button>';
+        var t=TRAIL[TIDX[s.id]],cl=!MATCH&&n>=CLUES.length&&!!s.by&&solved(clueOf(s.by)),got=S.thief&&s.id==='dayal';
+        h+='<button data-act="accuse" data-id="'+s.id+'"'+(S.thief||cl||n<NEEDC?' disabled':'')+'><img alt="" src="'+face(t.npc)+'">'+t.who+'<small style="display:block;font-weight:400;color:var(--mute)">'+(got?'Named':cl?'Cleared: '+s.why:MATCH&&s.prof?s.prof:'Was around last night')+'</small></button>';
       });
       h+='</div>';
     }
@@ -2035,7 +2225,7 @@ function bookView(tab){
     RECIPES.forEach(function(r){h+='<div class="rc">'+r.need.map(ic).join('')+'<span class="ar">▶</span>'+ic(r.k)+'<b>'+ITEMS[r.k].n+'</b></div>';});
     h+='<p><b>Swaps:</b> chai for twine (Lal Singh, in the bazaar), chai for the junction map (Guard Sahib, on the platform). Chalk is free from D’Souza.</p>';
     if(S.gear.length)h+='<p><b>You also have:</b> '+S.gear.map(function(g){return GEAR[g];}).join(' and ')+'.</p>';
-    h+='<p class="note">'+S.acts.length+' of '+LOOKN+' small things read. White markers.</p>';
+    h+='<p class="note">'+S.acts.length+' of '+LOOKN+' small things read.</p>';
   }else{
     if(!photos.length)h+='<p>No photos yet. Tap the camera, frame something, and press the white button. Some things are only clear in a close-up. First photos of the station, the tower, the Express and a few others pay ₹15 each.</p>';
     else{h+='<p>Photos stay until you close the game. Open one to save it.</p><div class="album">';photos.forEach(function(p,i){h+='<button data-act="photo" data-i="'+i+'" aria-label="Open photo '+(i+1)+'"><img alt="" src="'+p.url+'"></button>';});h+='</div>';}
@@ -2105,7 +2295,7 @@ function trigger(h){
   else lookView(h.id);
 }
 function renderPick(){
-  var h='';AV.forEach(function(a){h+=avCard(a,'button',sel===a.id?' on':'','Starts at '+a.where+'.');});
+  var h='';AV.forEach(function(a){h+=avCard(a,'button',sel===a.id?' on':'','');});
   $('#pickList').innerHTML=h;
   $('#pickNote').textContent='Pick your detective. Each has one special ability. The other four are somewhere around the junction. The Express is 15 minutes away.';
   var b=$('#btnTeam');b.disabled=!sel;b.textContent=sel?'Play as '+avById(sel).nick:'Pick one to start';
@@ -2118,16 +2308,17 @@ function enter(){
   if(S.dog&&EI.dog!=null)ENT[EI.dog].stop=true;
   if(first&&a.id==='naman')grantGuide();
   chips();hud();
-  if(first){S.started=1;if(!S.t0)S.t0=Date.now();savePos();say(a.start+GC+' <b>Follow the arrow.</b>',12000,'7:00 am');hintId=curHint();hintT=T+150;}
+  if(first){S.started=1;if(!S.t0)S.t0=Date.now();savePos();say(a.start,4000,'7:00 am');hintId=curHint();hintT=T+150;}
   else if(S.done)finale();
   else if(S.lost)loseView();
-  else say('Welcome back. '+nextText()+'.',5200,'Sundarpur Junction');
+  else say(nextText(),3000,'Back');
 }
 /* events */
 sheet.addEventListener('click',function(e){
   var b=e.target.closest('[data-act]');if(!b)return;var a=b.dataset.act,d=b.dataset;
   if(a==='close')closeSheet();
   else if(a==='give')give(d.id);
+  else if(a==='mk')morseKey(d.s);
   else if(a==='buy')buy(d.id,d.k);
   else if(a==='swap')swap(d.id);
   else if(a==='free')freeTake(d.id);
@@ -2146,7 +2337,7 @@ sheet.addEventListener('click',function(e){
 $('#hot').addEventListener('click',function(e){
   var b=e.target.closest('[data-s]');if(!b||paused)return;var i=+b.dataset.s,s=S.inv[i];
   if(S.sel===i&&s){sfx.tap();itemView(i);return;}
-  S.sel=i;sfx.tap();hotbar();if(s)say('<b>'+ITEMS[s[0]].n+'.</b> Tap again for more.',2200,'In hand');
+  S.sel=i;sfx.tap();hotbar();if(s)say('<b>'+ITEMS[s[0]].n+'</b>',1600,'In hand');
 });
 $('#sheetX').onclick=closeSheet;scrim.onclick=closeSheet;
 $('#toast').onclick=function(){this.classList.remove('on');};
@@ -2162,7 +2353,7 @@ $('#chips').addEventListener('click',function(e){var b=e.target.closest('[data-a
 var sel=null,introStep=0;
 var INTRO=[
  '<p class="tm">15 MINUTES TO NOON</p><p>Station Master Iyer is dead beside the locked signal cabin at Sundarpur Junction. The killer holds a ticket on the noon Express.</p><p>When the clock runs out, the train leaves and so does he. You cannot do everything. Choose fast.</p>',
- '<p class="tm">HOW TO PLAY</p><ul><li>Pink markers are clues. Green ones are things to pick up. Read four clues, then open Notes and name the killer.</li><li>Four friends are stuck around the junction. Help one and they join you with a special ability.</li><li>Drag to walk. The camera button takes photos.</li></ul>'
+ '<p class="tm">HOW TO PLAY</p><ul><li>Pink markers are clues. Green ones are things to pick up.</li><li>Find all 6 clues, then open Notes and name the killer.</li><li>Four friends are stuck nearby. Help one and they join you with a power.</li><li>Drag to walk. Arrow keys on a laptop.</li></ul>'
 ];
 $('#pickList').addEventListener('click',function(e){
   var b=e.target.closest('[data-av]');if(!b||b.classList.contains('taken'))return;sel=b.dataset.av;sfx.tap();renderPick();
@@ -2184,12 +2375,11 @@ else{
   $('#btnCam').onclick=function(){sfx.tap();enterShoot(false);};
   $('#shX').onclick=function(){exitShoot();};
   $('#shGo').onclick=function(){snap();};
-  $('#btnRot').onclick=function(){if(paused)return;sfx.tap();if(inRoomNow){say('Indoors the view stays put, so the two open walls always face you.',4200,'View');return;}CA+=Math.PI/2;if(CA>6.2){CA-=Math.PI*2;CAc-=Math.PI*2;}$('#mini').style.transform='rotate('+Math.round(45+CA*57.2958)+'deg)';};
+  $('#btnRot').onclick=function(){if(paused)return;sfx.tap();if(inRoomNow){say('Can’t turn the view indoors.',2200,'View');return;}CA+=Math.PI/2;if(CA>6.2){CA-=Math.PI*2;CAc-=Math.PI*2;}$('#mini').style.transform='rotate('+Math.round(45+CA*57.2958)+'deg)';};
   $('#btnZi').onclick=function(){if(paused)return;sfx.tap();ZM=Math.min(2.4,ZM*1.4);applyCam();};
   $('#btnZo').onclick=function(){if(paused)return;sfx.tap();ZM=Math.max(ZLO,ZM/1.4);applyCam();};
   $('#mini').onclick=function(){mapView();};
 }
 })();
 </script>
-
 </body></html>
